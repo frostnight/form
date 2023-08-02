@@ -3,6 +3,8 @@ package hello.itemservice.web.validation;
 import hello.itemservice.domain.item.Item;
 import hello.itemservice.domain.item.ItemRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -13,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Controller
 @RequestMapping("/validation/v1/items")
 @RequiredArgsConstructor
@@ -41,7 +44,7 @@ public class ValidationItemControllerV1 {
     }
 
     @PostMapping("/add")
-    public String addItem(@ModelAttribute Item item, RedirectAttributes redirectAttributes) {
+    public String addItem(@ModelAttribute Item item, RedirectAttributes redirectAttributes, Model model) {
 
         // 검증 오류 결과 보관
         Map<String, String> errors = new HashMap<>();
@@ -60,8 +63,19 @@ public class ValidationItemControllerV1 {
         // 특정 필드가 아닌 복합 룰 검증
         if (item.getPrice() != null && item.getQuantity() != null) {
             int resultPrice = item.getPrice() * item.getQuantity();
+            if (resultPrice < 10000) {
+                errors.put("globalError", "가격 * 수량의 합은 10,000원 이상이어야 합니다. 현재 값 = " + resultPrice);
+            }
         }
 
+        // 검증에 실패하면 다시 입력 폼으로
+        if (!errors.isEmpty()) {
+            log.info("errors = {} ", errors);
+            model.addAttribute("errors", errors);
+            return "validation/v1/addForm";
+        }
+
+        // 성공 로직
         Item savedItem = itemRepository.save(item);
         redirectAttributes.addAttribute("itemId", savedItem.getId());
         redirectAttributes.addAttribute("status", true);
