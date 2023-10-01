@@ -1,0 +1,26 @@
+package hello.login.domain.login;
+
+import org.springframework.stereotype.Service;
+
+import hello.login.domain.member.Member;
+import hello.login.domain.member.MemberRepository;
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+public class LoginService {
+
+	private final MemberRepository memberRepository;
+
+	/**
+	 *
+	 * @param loginId 로그인 ID
+	 * @param password 비밀번호
+	 * @return 로그인 실패
+	 */
+	public Member login(String loginId, String password){
+		return memberRepository.findByLoginId(loginId)
+			.filter(m -> m.getPassword().equals(password))
+			.orElse(null);
+	}
+}
