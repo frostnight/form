@@ -13,7 +13,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import hello.login.web.filter.LogFilter;
 import hello.login.web.interceptor.LogInterceptor;
 
-@Configuration
+// @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
 	@Override
