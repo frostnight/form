@@ -4,16 +4,21 @@ import javax.servlet.DispatcherType;
 import javax.servlet.Filter;
 import javax.servlet.FilterRegistration;
 
+import hello.login.web.exception.resolver.MyHandlerExceptionResolver;
+import hello.login.web.exception.resolver.UserHandlerExceptionResolver;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import hello.login.web.filter.LogFilter;
 import hello.login.web.interceptor.LogInterceptor;
 
-// @Configuration
+import java.util.List;
+
+@Configuration
 public class WebConfig implements WebMvcConfigurer {
 
 	@Override
@@ -22,6 +27,12 @@ public class WebConfig implements WebMvcConfigurer {
 			.order(1)
 			.addPathPatterns("/**")
 			.excludePathPatterns("/css/**", "*.ico", "/error", "/error-page/**");
+	}
+
+	@Override
+	public void extendHandlerExceptionResolvers(List<HandlerExceptionResolver> resolvers) {
+		resolvers.add(new MyHandlerExceptionResolver());
+		resolvers.add(new UserHandlerExceptionResolver());
 	}
 
 	// @Bean
