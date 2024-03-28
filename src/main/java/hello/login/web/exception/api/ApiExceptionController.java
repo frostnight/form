@@ -47,6 +47,7 @@ public class ApiExceptionController {
     public String defaultException(@RequestParam Integer data) {
         return "ok";
     }
+
     @Data
     @AllArgsConstructor
     static class MemberDto {

@@ -21,29 +21,8 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/api2")
 public class ApiExceptionV2Controller {
 
-	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	@ExceptionHandler(IllegalArgumentException.class)
-	public ErrorResult illegalExHandler(IllegalArgumentException e) {
-		log.error("[exceptionHandler] ex", e);
-		return new ErrorResult("BAD", e.getMessage());
-	}
-
-	@ExceptionHandler
-	public ResponseEntity<ErrorResult> useExHandler(UserException e) {
-		log.error("[exceptionHandler] ex", e);
-		ErrorResult errorResult = new ErrorResult("USER-EX", e.getMessage());
-		return new ResponseEntity<>(errorResult, HttpStatus.BAD_REQUEST);
-	}
-
-	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-	@ExceptionHandler
-	public ErrorResult exHandler(Exception e) {
-		log.error("[exceptionHandler] ex", e);
-		return new ErrorResult("EX", "내부 오류");
-	}
-
 	@GetMapping("/members/{id}")
-	public ApiExceptionController.MemberDto getMember(@PathVariable("id") String id) {
+	public MemberDto getMember(@PathVariable("id") String id) {
 		if(id.equals("ex")) {
 			throw new RuntimeException("잘못된 사용자");
 		}
@@ -54,13 +33,14 @@ public class ApiExceptionV2Controller {
 			throw new UserException("사용자 오류");
 		}
 
-		return new ApiExceptionController.MemberDto(id, "hello" + id);
+		return new MemberDto(id, "hello" + id);
 	}
 
 	@GetMapping("/default-handler-ex")
 	public String defaultException(@RequestParam Integer data) {
 		return "ok";
 	}
+
 	@Data
 	@AllArgsConstructor
 	static class MemberDto {
